@@ -10,7 +10,7 @@ Evaluate performance across different DPI heuristics
 Visualize detection rates and average rewards across environments
 
 **Repository Structure**
-
+````{verbatim}
 vpn/
 ├── rl/                     # Reinforcement learning logic
 │   ├── vpn_env.py          # Custom Gymnasium environment
@@ -31,6 +31,7 @@ vpn/
 ├── test_env.py             # Simple test for verifying environment behavior
 ├── README.md               # Project overview and documentation
 └── requirements.txt        # Python dependencies
+````
 
 **How to Run**
 Install Dependencies: pip3 install -r requirements.txt
