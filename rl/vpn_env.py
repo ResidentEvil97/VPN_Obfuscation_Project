@@ -1,5 +1,5 @@
-import gym
-from gym import spaces
+import gymnasium as gym
+from gymnasium import spaces
 import numpy as np
 
 class VPNObfuscationEnv(gym.Env):
@@ -24,14 +24,17 @@ class VPNObfuscationEnv(gym.Env):
         self.state = None
         self.reset()
 
-    def reset(self):
+    def reset(self, *, seed=None, options=None):
+        super().reset(seed=seed)
+
         # Randomize starting traffic conditions
         mean_latency = np.random.uniform(40.0, 60.0)
         std_packet_size = np.random.uniform(150.0, 250.0)
         detection_flag = 0.0  # New episode → no detection yet
 
         self.state = np.array([mean_latency, std_packet_size, detection_flag], dtype=np.float32)
-        return self.state
+        return self.state, {}
+
     
     def step(self, action):
         # Unpack action: [jitter (ms), packet size modifier (bytes)]
@@ -50,6 +53,7 @@ class VPNObfuscationEnv(gym.Env):
             reward = 1.0
 
         reward -= latency_penalty  # penalize high delay even if undetected
+        reward = float(reward)     # convert to native Python float ← ★ THIS FIX
 
         # Update internal state
         mean_latency = np.clip(self.state[0] + jitter, 0, 1000)
@@ -58,10 +62,12 @@ class VPNObfuscationEnv(gym.Env):
 
         self.state = np.array([mean_latency, std_packet_size, detection_flag], dtype=np.float32)
 
-        done = False  # You could use time steps or detections to end episode — for now, never ends
-        info = {}     # Could add debug info here
+        terminated = False  # no terminal state for now
+        truncated = False   # no episode cutoff
 
-        return self.state, reward, done, info
+        return self.state, reward, terminated, truncated, {}
+
+
     
     def _simulate_dpi(self, jitter, size_mod):
         """
