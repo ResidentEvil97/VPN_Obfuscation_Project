@@ -4,6 +4,7 @@ from rl.vpn_env import VPNObfuscationEnv
 from stable_baselines3 import SAC
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.env_checker import check_env
+from stable_baselines3.common.callbacks import ProgressBarCallback
 import os
 
 # Set up the environment
@@ -42,9 +43,14 @@ model = SAC(
 
 # Train the model
 
-timesteps = 100_000  # Start with 100k for testing; increase for final results
+timesteps = 100_000 
 print(f"Training SAC model for {timesteps} timesteps...")
 model.learn(total_timesteps=timesteps)
+
+model.learn(
+    total_timesteps=timesteps,
+    callback=ProgressBarCallback()
+)
 
 # Save the model
 
