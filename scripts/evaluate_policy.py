@@ -4,7 +4,7 @@ from stable_baselines3 import SAC
 from rl.vpn_env import VPNObfuscationEnv
 
 # Config
-strategies = ["basic", "strict", "noisy"]
+strategies = ["basic", "strict", "noisy", "ml"]
 episodes = 10
 steps_per_episode = 100
 model_path = "models/sac_vpn_obfuscation"

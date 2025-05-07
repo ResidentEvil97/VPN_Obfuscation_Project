@@ -10,7 +10,9 @@ import os
 # Set up the environment
 
 # Use a simple DPI strategy for initial training
-env = VPNObfuscationEnv(dpi_strategy="basic")
+# env = VPNObfuscationEnv(dpi_strategy="basic")
+env = VPNObfuscationEnv(dpi_strategy="ml")
+
 
 # Optional: check API compliance
 check_env(env, warn=True)
@@ -54,6 +56,6 @@ model.learn(
 
 # Save the model
 
-model_path = os.path.join(model_dir, "sac_vpn_obfuscation")
+model_path = os.path.join(model_dir, "sac_vpn_obfuscation_ml")
 model.save(model_path)
 print(f"Model saved to {model_path}.zip")

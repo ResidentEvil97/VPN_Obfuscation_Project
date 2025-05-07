@@ -2,6 +2,7 @@ import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
 from dpi.mock_dpi import MockDPI
+import joblib
 
 
 class VPNObfuscationEnv(gym.Env):
@@ -21,7 +22,11 @@ class VPNObfuscationEnv(gym.Env):
 
         # DPI detection strategy
         self.dpi_strategy = dpi_strategy
-        self.dpi = MockDPI()
+        # Load ML DPI model only if needed
+        if dpi_strategy == "ml":
+            self.dpi_model = joblib.load("dpi/models/random_forest_dpi.pkl")
+        else:
+            self.dpi = MockDPI()
 
         # Internal state
         self.state = None
@@ -74,16 +79,27 @@ class VPNObfuscationEnv(gym.Env):
     
     def _simulate_dpi(self, jitter, size_mod):
         """
-        Simulated DPI logic based on heuristic detection thresholds.
+        Simulated DPI logic using rule-based or ML-based model.
         """
-        if self.dpi_strategy == "basic":
+        if self.dpi_strategy == "ml":
+            # Construct feature vector for the ML classifier
+            duration = self.state[0]                     # mean_latency
+            pkts_per_sec = jitter                        # proxy for transmission rate
+            bytes_per_sec = self.state[1] + size_mod     # estimated flowBytesPerSecond
+            features = [[duration, pkts_per_sec, bytes_per_sec]]
+            prediction = self.dpi_model.predict(features)[0]
+            return bool(prediction)  # 1 = detected, 0 = not detected
+
+        # Rule-based fallbacks
+        elif self.dpi_strategy == "basic":
             return (jitter > 100 or abs(size_mod) > 50)
         elif self.dpi_strategy == "strict":
             return (jitter > 50 or size_mod > 30)
         elif self.dpi_strategy == "noisy":
-            return np.random.rand() < 0.5  # random DPI (for robustness)
+            return np.random.rand() < 0.5
         else:
-            return (jitter > 75 and abs(size_mod) > 75)  # fallback rule
+            return (jitter > 75 and abs(size_mod) > 75)
+
 
 
 
