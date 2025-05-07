@@ -16,10 +16,8 @@ class VPNObfuscationEnv(gym.Env):
                                        dtype=np.float32)
 
         # Define observation space: [mean_latency, std_packet_size, recent_detection]
-        self.observation_space = spaces.Box(low=0.0,
-                                            high=1000.0,
-                                            shape=(3,),
-                                            dtype=np.float32)
+        self.observation_space = spaces.Box(low=0.0, high=1000.0,
+                                            shape=(4,), dtype=np.float32)
 
         # DPI detection strategy
         self.dpi_strategy = dpi_strategy
@@ -30,6 +28,8 @@ class VPNObfuscationEnv(gym.Env):
             self.dpi = MockDPI()
 
         # Internal state
+        self.history_length = 10
+        self.packet_size_history = []
         self.state = None
         self.reset()
 
@@ -67,9 +67,16 @@ class VPNObfuscationEnv(gym.Env):
         # Update internal state
         mean_latency = np.clip(self.state[0] + jitter, 0, 1000)
         std_packet_size = np.clip(self.state[1] + size_mod, 0, 1000)
+        # Track recent packet sizes
+        self.packet_size_history.append(std_packet_size)
+        if len(self.packet_size_history) > self.history_length:
+            self.packet_size_history.pop(0)
+
+        # Compute entropy of packet size variation
+        packet_size_entropy = float(np.std(self.packet_size_history))  # proxy for entropy
         detection_flag = 1.0 if detected else 0.0
 
-        self.state = np.array([mean_latency, std_packet_size, detection_flag], dtype=np.float32)
+        self.state = np.array([mean_latency, std_packet_size, detection_flag, packet_size_entropy], dtype=np.float32)
 
         terminated = False  # no terminal state for now
         truncated = False   # no episode cutoff
