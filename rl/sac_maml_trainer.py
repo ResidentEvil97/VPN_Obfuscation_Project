@@ -28,24 +28,26 @@ os.makedirs(model_dir, exist_ok=True)
 
 # Set up the SAC model
 
+
+policy_kwargs = dict(net_arch=[256, 256, 128])
 model = SAC(
     policy="MlpPolicy",
     env=env,
-    learning_rate=3e-4,
-    buffer_size=100_000,
-    batch_size=256,
+    learning_rate=1e-4,
+    buffer_size=500_000,
+    batch_size=512,
     tau=0.005,
     gamma=0.99,
     train_freq=1,
     gradient_steps=1,
-    ent_coef="auto",  # Entropy bonus for exploration
+    ent_coef="auto_0.1",
     verbose=1,
-    tensorboard_log=log_dir
+    tensorboard_log=log_dir,
+    policy_kwargs=policy_kwargs
 )
-
 # Train the model
 
-timesteps = 100_000 
+timesteps = 10000
 print(f"Training SAC model for {timesteps} timesteps...")
 model.learn(total_timesteps=timesteps)
 

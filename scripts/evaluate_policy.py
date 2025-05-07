@@ -7,7 +7,7 @@ from rl.vpn_env import VPNObfuscationEnv
 strategies = ["basic", "strict", "noisy", "ml"]
 episodes = 10
 steps_per_episode = 100
-model_path = "models/sac_vpn_obfuscation"
+model_path = "models/sac_vpn_obfuscation_ml.zip"
 
 # Load Trained Model
 model = SAC.load(model_path)

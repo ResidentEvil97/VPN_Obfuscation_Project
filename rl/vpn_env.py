@@ -41,7 +41,8 @@ class VPNObfuscationEnv(gym.Env):
         std_packet_size = np.random.uniform(150.0, 250.0)
         detection_flag = 0.0  # New episode → no detection yet
 
-        self.state = np.array([mean_latency, std_packet_size, detection_flag], dtype=np.float32)
+        packet_size_entropy = 0.0  # or a suitable initial value
+        self.state = np.array([mean_latency, std_packet_size, detection_flag, packet_size_entropy], dtype=np.float32)        
         return self.state, {}
 
     
@@ -53,11 +54,12 @@ class VPNObfuscationEnv(gym.Env):
         detected = self._simulate_dpi(jitter, size_mod)
 
         # Latency penalty
-        latency_penalty = jitter / 100.0  # Scale down (0–2)
+        latency_penalty = jitter / 500.0  # Scale down (0–2)
 
+        # detected = self.dpi.detect(features)
         # Reward logic
         if detected:
-            reward = -1.0
+            reward = -5.0
         else:
             reward = 1.0
 
