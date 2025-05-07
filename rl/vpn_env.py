@@ -1,6 +1,8 @@
 import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
+from dpi.mock_dpi import MockDPI
+
 
 class VPNObfuscationEnv(gym.Env):
     def __init__(self, dpi_strategy="basic"):
@@ -19,6 +21,7 @@ class VPNObfuscationEnv(gym.Env):
 
         # DPI detection strategy
         self.dpi_strategy = dpi_strategy
+        self.dpi = MockDPI()
 
         # Internal state
         self.state = None
