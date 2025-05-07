@@ -1,13 +1,15 @@
-import gymnasium as gym
-from gymnasium import spaces
-import numpy as np
-from dpi.mock_dpi import MockDPI
-import pandas as pd
-import joblib
-import random
-
 class VPNObfuscationEnv(gym.Env):
+    """
+    Environment for the VPN Obfuscation task.
+    """
+
     def __init__(self, dpi_strategy="basic"):
+        """
+        Initialize the environment.
+
+        Args:
+            dpi_strategy (str): The DPI strategy to use. Defaults to "basic".
+        """
         super().__init__()
 
         # Define action space: [jitter_ms (0–200), packet_size_mod (-100 to +100 bytes)]
@@ -34,6 +36,16 @@ class VPNObfuscationEnv(gym.Env):
         self.reset()
 
     def reset(self, *, seed=None, options=None):
+        """
+        Reset the environment.
+
+        Args:
+            seed (int): The random seed to use. Defaults to None.
+            options (dict): Additional options for the reset method. Defaults to None.
+
+        Returns:
+            tuple: The initial state and info.
+        """
         super().reset(seed=seed)
         self.current_step = 0
         mean_latency = np.random.uniform(40.0, 60.0)
@@ -44,8 +56,16 @@ class VPNObfuscationEnv(gym.Env):
         self.packet_size_history = [std_packet_size]
         return self.state, {}
 
-    
     def step(self, action):
+        """
+        Take a step in the environment.
+
+        Args:
+            action (list): The action to take.
+
+        Returns:
+            tuple: The new state, reward, terminated, truncated, and info.
+        """
         # --- Apply action to internal state ---
         jitter = float(action[0]) * 100  # Example scaling
         size_mod = float(action[1]) * 100
@@ -116,30 +136,3 @@ class VPNObfuscationEnv(gym.Env):
 
         # Rule-based fallbacks
         return (jitter > 90 or size_mod > 90 or random.random() < 0.05)
-
-        # elif self.dpi_strategy == "basic":
-        #     return (jitter > 100 or abs(size_mod) > 50)
-        # elif self.dpi_strategy == "strict":
-        #     return (jitter > 50 or size_mod > 30)
-        # elif self.dpi_strategy == "noisy":
-        #     return np.random.rand() < 0.5
-        # else:
-        #     return (jitter > 80 or size_mod > 80)
-
-    def run_random_agent(num_episodes=5, max_steps=200):
-        env = VPNObfuscationEnv()
-        for ep in range(num_episodes):
-            obs, _ = env.reset()
-            total_reward = 0
-            detected_steps = 0
-            for t in range(max_steps):
-                action = env.action_space.sample()
-                obs, reward, terminated, truncated, info = env.step(action)
-                total_reward += reward
-                if info.get("detected"):
-                    detected_steps += 1
-                if terminated or truncated:
-                    break
-            print(f"RandomAgent Episode {ep+1}: Total reward = {total_reward:.2f}, Detected steps = {detected_steps}/{max_steps}")
-
-

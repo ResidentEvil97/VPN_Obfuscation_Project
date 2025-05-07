@@ -1,27 +1,30 @@
+# Import necessary libraries
+# Numpy is used for numerical computations
 import numpy as np
+# Used for file operations (e.g. creating directories)
 import os
-import shutil
-import copy
-from stable_baselines3 import SAC
+# Used for creating a Monitor instance to wrap the environment
 from stable_baselines3.common.monitor import Monitor
+# Used for creating the environment
 from rl.vpn_env import VPNObfuscationEnv
+# Used for timing how long the script takes to run
 import time
 
-# --- Hyperparameters ---
-meta_batch_size = 1         # Number of tasks per meta-iteration
-meta_iterations = 1        # Number of meta-iterations
-inner_steps = 1             # Number of adaptation steps per task
-adapt_steps_timesteps = 10 # Timesteps for each adaptation step
-eval_episodes = 1           # Evaluation episodes per task
-policy_kwargs = dict(net_arch=[32])
+# Define hyperparameters
+meta_batch_size = 1                     # Number of tasks per meta-iteration
+meta_iterations = 1                     # Number of meta-iterations
+inner_steps = 1                         # Number of adaptation steps per task
+adapt_steps_timesteps = 10              # Timesteps for each adaptation step
+eval_episodes = 1                       # Evaluation episodes per task
+policy_kwargs = dict(net_arch=[32])     # Policy architecture
 
-# --- Utility: Create a randomized environment (TASK) ---
+# Create a randomized environment (TASK)
 def make_random_env():
     dpi_strategy = "basic"  # Only use fast, non-ML DPI for debugging
     env = VPNObfuscationEnv(dpi_strategy=dpi_strategy)
     return Monitor(env)
 
-# --- Utility: Evaluate a model ---
+# Evaluate a model
 def evaluate(model, env, n_episodes=5):
     rewards = []
     for _ in range(n_episodes):
@@ -40,7 +43,7 @@ def evaluate(model, env, n_episodes=5):
         rewards.append(ep_reward)
     return np.mean(rewards)
 
-# --- Meta-Training Loop ---
+# Meta-training loop
 meta_policy_path = "meta_policy_tmp"
 for meta_iter in range(meta_iterations):
     print(f"Meta-iteration {meta_iter} starting")
@@ -70,31 +73,27 @@ for meta_iter in range(meta_iterations):
     meta_model.save(f"{meta_policy_path}/meta_model")
 
     for task in range(meta_batch_size):
-        # --- Clone meta-policy for this task ---
+        # Clone meta-policy for this task
         task_env = make_random_env()
         task_model = SAC.load(f"{meta_policy_path}/meta_model", env=task_env)
 
-        # --- Inner loop: Adaptation ---
+        # Inner loop: Adaptation
         start_adapt = time.time()
         task_model.learn(total_timesteps=adapt_steps_timesteps, reset_num_timesteps=False, progress_bar=False)
         end_adapt = time.time()
         print(f"Task {task} adaptation took {end_adapt - start_adapt:.2f} seconds")
 
-        # --- Outer loop: Evaluate adapted agent ---
+        # Outer loop: Evaluate adapted agent
         start_eval = time.time()
         avg_reward = evaluate(task_model, task_env, n_episodes=eval_episodes)
         end_eval = time.time()
         print(f"Task {task} evaluation took {end_eval - start_eval:.2f} seconds")
         meta_rewards.append(avg_reward)
 
-    # --- Meta-update: Average reward (for logging) ---
+    # Meta-update: Average reward (for logging)
     print(f"Meta-iteration {meta_iter}: Avg post-adaptation reward across tasks: {np.mean(meta_rewards):.2f}")
 
-    # (True meta-gradient update is not supported in SB3; you can try first-order MAML by averaging weights, but this is a research topic.)
-
-print("Meta-training done.")
-
-# --- Test adaptation on a new, unseen task ---
+# Test adaptation on a new, unseen task
 test_env = make_random_env()
 test_model = SAC.load(f"{meta_policy_path}/meta_model", env=test_env)
 before = evaluate(test_model, test_env, n_episodes=eval_episodes)
