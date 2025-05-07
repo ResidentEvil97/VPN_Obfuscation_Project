@@ -11,6 +11,7 @@ import os
 
 # Use a simple DPI strategy for initial training
 # env = VPNObfuscationEnv(dpi_strategy="basic")
+
 env = VPNObfuscationEnv(dpi_strategy="ml")
 
 
