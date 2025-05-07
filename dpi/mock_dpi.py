@@ -3,7 +3,7 @@ import joblib
 import os
 
 class MockDPI:
-    def __init__(self, model_path="dpi/data/dpi_model.joblib"):
+    def __init__(self, model_path = "dpi/models/random_forest_dpi.pkl"):
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"ML model not found at {model_path}. Train and save a model first.")
         self.model = joblib.load(model_path)

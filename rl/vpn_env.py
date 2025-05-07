@@ -2,6 +2,7 @@ import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
 from dpi.mock_dpi import MockDPI
+import pandas as pd
 import joblib
 
 
@@ -86,7 +87,8 @@ class VPNObfuscationEnv(gym.Env):
             duration = self.state[0]                     # mean_latency
             pkts_per_sec = jitter                        # proxy for transmission rate
             bytes_per_sec = self.state[1] + size_mod     # estimated flowBytesPerSecond
-            features = [[duration, pkts_per_sec, bytes_per_sec]]
+            features = pd.DataFrame([[duration, pkts_per_sec, bytes_per_sec]],
+                        columns=["duration", "flowPktsPerSecond", "flowBytesPerSecond"])
             prediction = self.dpi_model.predict(features)[0]
             return bool(prediction)  # 1 = detected, 0 = not detected
 
