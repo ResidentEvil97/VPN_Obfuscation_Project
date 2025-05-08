@@ -1,4 +1,12 @@
-# ml-based mock dpi
+"""
+Train a Machine Learning Model to Detect VPN Traffic
+======================================================
+
+This script trains a random forest classifier on the CICFlowMeter dataset
+and saves it to a file called `random_forest_dpi.pkl`. The model is used by
+the `MockDPI` class in the `vpn_env.py` file to detect VPN traffic.
+"""
+
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
@@ -33,4 +41,3 @@ print(f"Model accuracy: {accuracy:.2%}")
 # Save the model
 joblib.dump(clf, "dpi/models/random_forest_dpi.pkl")
 print("Model saved to dpi/models/random_forest_dpi.pkl")
-
