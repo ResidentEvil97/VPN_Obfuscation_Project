@@ -82,3 +82,10 @@ _Results generated on: 2025-05-07_
 
 ![Most Recent Results](images/Eval_Results_2025-05-07.png)
 _Figure: Most recent evaluation results model performance across DPI strategies_
+
+## Acknowledgement
+This implementation was built with the assistance of AI tools.
+
+**Project Developed By**
+Manasa Bala, Myriam Rahmoun, & Anthony Miguel
+
