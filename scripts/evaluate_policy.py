@@ -1,8 +1,11 @@
 # Evaluate model performance across different DPI strategies
-
+import numpy as np
+import matplotlib.pyplot as plt
+from stable_baselines3 import SAC
+from rl.vpn_env import VPNObfuscationEnv
 # Config
 # List of DPI strategies to evaluate
-strategies = ["basic", "strict", "noisy", "ml"]
+strategies = ["noisy", "ml"]
 # Number of episodes to evaluate per strategy
 episodes = 10
 # Number of steps per episode

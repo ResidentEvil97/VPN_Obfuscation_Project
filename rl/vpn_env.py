@@ -1,3 +1,12 @@
+import gymnasium as gym
+from gymnasium import spaces
+import numpy as np
+import random
+import pandas as pd
+import joblib
+
+from dpi.mock_dpi import MockDPI
+
 class VPNObfuscationEnv(gym.Env):
     """
     Environment for the VPN Obfuscation task.
@@ -92,10 +101,16 @@ class VPNObfuscationEnv(gym.Env):
         latency_penalty = mean_latency / 250.0    # Lower scaling, use updated latency
         step_penalty = 0.01                       # small negative reward per step
 
-        if detected:
-            reward -= 0.2  # Lower detection penalty
+        if self.dpi_strategy == "basic":
+            if detected:
+                reward -= 1.0  # less penalty for detection
+            else:
+                reward += 2.0  # Bigger bonus for evasion
         else:
-            reward += 1.0  # Bonus for evading detection
+            if detected:
+                reward -= 0.2  # Lower detection penalty
+            else:
+                reward += 1.0  # Bonus for evading detection
 
         reward -= latency_penalty
         reward -= step_penalty
@@ -135,4 +150,11 @@ class VPNObfuscationEnv(gym.Env):
             return bool(prediction)  # 1 = detected, 0 = not detected
 
         # Rule-based fallbacks
-        return (jitter > 90 or size_mod > 90 or random.random() < 0.05)
+        if self.dpi_strategy == "strict":
+            return (jitter > 50 or size_mod > 30 or random.random() < 0.10)
+        elif self.dpi_strategy == "noisy":
+            return random.random() < 0.5
+        elif self.dpi_strategy == "basic":
+            return ((jitter + abs(size_mod)) > 130)
+            # return (jitter > 100 or abs(size_mod) > 50)
+        # return (jitter > 90 or size_mod > 90 or random.random() < 0.05)

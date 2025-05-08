@@ -1,14 +1,14 @@
 # Import necessary libraries
 # Numpy is used for numerical computations
 import numpy as np
-# Used for file operations (e.g. creating directories)
 import os
-# Used for creating a Monitor instance to wrap the environment
-from stable_baselines3.common.monitor import Monitor
-# Used for creating the environment
-from rl.vpn_env import VPNObfuscationEnv
-# Used for timing how long the script takes to run
 import time
+import shutil
+
+from stable_baselines3 import SAC
+from stable_baselines3.common.monitor import Monitor
+
+from rl.vpn_env import VPNObfuscationEnv
 
 # Define hyperparameters
 meta_batch_size = 1                     # Number of tasks per meta-iteration
