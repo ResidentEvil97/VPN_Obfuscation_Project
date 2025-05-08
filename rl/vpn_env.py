@@ -1,3 +1,33 @@
+"""
+VPN Obfuscation Environment
+===========================
+
+This file contains the implementation of the VPN obfuscation environment.
+
+The environment is responsible for simulating the effects of a VPN on network traffic,
+and for simulating the detection of the VPN by a DPI system.
+
+The environment takes in an action, which is a list of two elements: the jitter to add
+to the packet timing, and the modification to make to the packet size.
+
+The environment then returns a tuple containing the new state, the reward, whether
+the episode has terminated, and a dictionary of additional information.
+
+The state of the environment is a tuple containing the mean latency, the standard
+deviation of the packet size, a flag indicating whether the VPN was detected, and
+the entropy of the packet size history.
+
+The reward is a scalar value that is calculated based on the state of the environment.
+The reward is higher if the VPN is not detected, and lower if the VPN is detected.
+
+The environment also keeps track of the number of steps taken, and will terminate
+the episode if the number of steps taken exceeds a certain maximum.
+
+The environment is designed to be used with the Stable Baselines library, and
+is intended to be used as a testbed for reinforcement learning algorithms.
+
+"""
+
 import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
@@ -6,10 +36,15 @@ import pandas as pd
 import joblib
 
 from dpi.mock_dpi import MockDPI
-
 class VPNObfuscationEnv(gym.Env):
     """
     Environment for the VPN Obfuscation task.
+
+    The environment takes in an action, which is a list of two elements: the jitter
+    to add to the packet timing, and the modification to make to the packet size.
+
+    The environment then returns a tuple containing the new state, the reward,
+    whether the episode has terminated, and a dictionary of additional information.
     """
 
     def __init__(self, dpi_strategy="basic"):
