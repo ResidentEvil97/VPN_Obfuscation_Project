@@ -11,6 +11,9 @@ This project implements a custom reinforcement learning environment for VPN traf
 - Evaluate performance across different DPI heuristics
 - Visualize detection rates and average rewards across environments
 
+![Approach Model](images/Approach_Model.png)
+_Figure: Approach for the VPN Obfuscation RL Environment and DPI interaction._
+
 **Repository Structure**
 
 - `rl/`: Reinforcement learning logic and environment
@@ -67,3 +70,17 @@ This project implements a custom reinforcement learning environment for VPN traf
 - Replace heuristic DPI with ML-based classifier trained on CIC VPN-nonVPN dataset
 - Connect to Scapy and TShark for real-time packet generation and detection
 - Introduce dynamic adversarial DPI that adapts during training
+
+## Most Recent Results
+
+Below are the most recent evaluation results for the trained RL agent:
+
+| DPI Strategy | Avg Reward | Detection Rate |
+| ------------ | ---------- | -------------- |
+| NOISY        | 1.427      | 46.90%         |
+| ML           | 1.978      | 1.00%          |
+
+_Results generated on: 2025-05-07_
+
+![Most Recent Results](images/Eval_Results_2025-05-07.png)
+_Figure: Most recent evaluation results model performance across DPI strategies_
