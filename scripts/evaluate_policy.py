@@ -1,8 +1,15 @@
-# Evaluate model performance across different DPI strategies
+"""
+Evaluate Model Performance Across DPI Strategies
+==============================================
+This script evaluates a trained SAC model across different DPI strategies by running episodes
+and calculating average rewards and detection rates.
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 from stable_baselines3 import SAC
 from rl.vpn_env import VPNObfuscationEnv
+
 # Config
 # List of DPI strategies to evaluate
 strategies = ["noisy", "ml"]
