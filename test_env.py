@@ -1,4 +1,9 @@
-# test_env.py
+"""
+Test Environment Script
+=======================
+
+This script is used to test the VPN obfuscation environment thoroughly.
+"""
 
 from rl.vpn_env import VPNObfuscationEnv
 import numpy as np
@@ -8,7 +13,9 @@ env = VPNObfuscationEnv(dpi_strategy="basic")
 
 # Reset environment to get initial state
 obs = env.reset()
+# Initialize total reward
 total_reward = 0
+# Iterate over 200 steps
 for t in range(200):
     # Take a random action
     action = env.action_space.sample()
@@ -16,6 +23,7 @@ for t in range(200):
     obs, reward, terminated, truncated, info = env.step(action)
     # Print reward and detection status
     print(f"Step {t}: reward={reward}, detected={info['detected']}")
+    # Add reward to total reward
     total_reward += reward
     # Break if episode is done
     if terminated or truncated:
