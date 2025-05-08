@@ -1,3 +1,23 @@
+""" 
+ =========================================================================== 
+  Meta-Learning for VPN Traffic Obfuscation
+ =========================================================================== 
+
+  This script trains a Soft Actor-Critic (SAC) agent using Model-Agnostic
+  Meta-Learning (MAML) to learn how to adapt to new VPN traffic obfuscation
+  environments. The script is organized into a few sections:
+
+  1. Hyperparameters: Meta-batch size, number of meta-iterations, inner
+     adaptation steps, and evaluation episodes.
+  2. Environment creation: A function to create a randomized VPN traffic
+     obfuscation environment (task).
+  3. Model evaluation: A function to evaluate a model in a given environment.
+  4. Meta-training loop: The main loop that creates tasks, adapts the model,
+     evaluates the adapted model, and logs the results.
+  5. Test adaptation: Test the adapted model on a new, unseen task.
+"""
+
+
 # Import necessary libraries
 # Numpy is used for numerical computations
 import numpy as np
@@ -10,7 +30,9 @@ from stable_baselines3.common.monitor import Monitor
 
 from rl.vpn_env import VPNObfuscationEnv
 
-# Define hyperparameters
+
+
+# Hyperparameters
 meta_batch_size = 1                     # Number of tasks per meta-iteration
 meta_iterations = 1                     # Number of meta-iterations
 inner_steps = 1                         # Number of adaptation steps per task
@@ -20,12 +42,27 @@ policy_kwargs = dict(net_arch=[32])     # Policy architecture
 
 # Create a randomized environment (TASK)
 def make_random_env():
+    """Create a randomized VPN traffic obfuscation environment (task).
+
+    Returns:
+        VPNObfuscationEnv: A randomized VPNObfuscationEnv instance.
+    """
     dpi_strategy = "basic"  # Only use fast, non-ML DPI for debugging
     env = VPNObfuscationEnv(dpi_strategy=dpi_strategy)
     return Monitor(env)
 
 # Evaluate a model
 def evaluate(model, env, n_episodes=5):
+    """Evaluate a model in a given environment.
+
+    Args:
+        model (SAC): The model to evaluate.
+        env (VPNObfuscationEnv): The environment to evaluate in.
+        n_episodes (int): The number of episodes to evaluate. Defaults to 5.
+
+    Returns:
+        float: The average reward across episodes.
+    """
     rewards = []
     for _ in range(n_episodes):
         obs, _ = env.reset()
