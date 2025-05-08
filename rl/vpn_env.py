@@ -191,5 +191,3 @@ class VPNObfuscationEnv(gym.Env):
             return random.random() < 0.5
         elif self.dpi_strategy == "basic":
             return ((jitter + abs(size_mod)) > 130)
-            # return (jitter > 100 or abs(size_mod) > 50)
-        # return (jitter > 90 or size_mod > 90 or random.random() < 0.05)
