@@ -1,4 +1,14 @@
-# sac_maml_trainer.py
+"""
+SAC-MAML VPN Traffic Obfuscation Trainer
+=========================================
+
+This script trains an SAC agent to play the VPN traffic obfuscation game.
+It sets up the environment, checks API compliance, wraps the environment with a Monitor,
+and defines the policy architecture. It then creates an SAC model instance
+and passes it the environment, policy architecture, and hyperparameters.
+It trains the model using the learn method and saves it to a file.
+
+"""
 
 # Import VPNObfuscationEnv, SAC, Monitor, and env_checker from stable_baselines3
 from rl.vpn_env import VPNObfuscationEnv
@@ -10,13 +20,13 @@ from stable_baselines3.common.callbacks import ProgressBarCallback
 # Import os for creating directories
 import os
 
+
 # Set up the environment
 # Create a VPNObfuscationEnv with a simple DPI strategy for initial training
 # env = VPNObfuscationEnv(dpi_strategy="basic")
 
 # Create a VPNObfuscationEnv with a machine learning-based DPI strategy
 env = VPNObfuscationEnv(dpi_strategy="ml")
-
 
 # Optional: check API compliance
 # Use env_checker to check the environment for API compliance
