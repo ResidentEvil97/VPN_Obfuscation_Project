@@ -1,4 +1,4 @@
-# VPN Obfuscation Project
+# Adversarial AI for VPN Obfuscation: Evading ML-Based Censorship Using SAC & MAML
 
 **Overview**
 This project implements a custom reinforcement learning environment for VPN traffic obfuscation, designed to evade a variety of Deep Packet Inspection (DPI) strategies. It trains a Soft Actor-Critic (SAC) agent to learn how to modify packet timing (jitter) and packet size in order to minimize detection. The environment simulates both rule-based and machine learning-based DPI adversaries, allowing for robust evaluation of the agent's adaptability. The framework also supports a simplified meta-learning loop via a "meta-training" script, which iteratively adapts the agent to new DPI strategies. **Note:** This project does not use the full Model-Agnostic Meta-Learning (MAML) algorithm, but rather a simplified loop to test the agent's ability to adapt.
