@@ -29,7 +29,6 @@ _Figure: Approach for the VPN Obfuscation RL Environment and DPI interaction._
   - `models/`: Machine learning classifiers for DPI logic (e.g., .pkl files)
 - `scripts/`: Run and evaluate experiments
   - `evaluate_policy.py`: Evaluate trained agent across DPI strategies
-  - `run_experiment.py`: (Optional) Experiment orchestration script
 - `models/`: RL agent checkpoints (saved by SB3 or your RL scripts)
 - `logs/`: TensorBoard logs (ignored in git)
 - `test_env.py`: Simple script to test environment behavior with random agent
