@@ -23,14 +23,13 @@ _Figure: Approach for the VPN Obfuscation RL Environment and DPI interaction._
 - `dpi/`: DPI logic and simulated detection models
   - `mock_dpi.py`: Heuristic detection rules for DPI
   - `packet_features.py`: Feature extraction from PCAP or CSV
-  - `tshark_dpi.py`: Real-time DPI simulation using TShark (future/optional)
   - `data/`: Data for DPI (used by packet_features or ML-DPI)
     - `sample_combined_balanced.csv`: Example CSV dataset for DPI/ML classifier
   - `models/`: Machine learning classifiers for DPI logic (e.g., .pkl files)
 - `scripts/`: Run and evaluate experiments
   - `evaluate_policy.py`: Evaluate trained agent across DPI strategies
-- `models/`: RL agent checkpoints (saved by SB3 or your RL scripts)
-- `logs/`: TensorBoard logs (ignored in git)
+- `models/`: RL agent checkpoints 
+- `logs/`: TensorBoard logs
 - `test_env.py`: Simple script to test environment behavior with random agent
 - `README.md`: Project overview and documentation
 - `requirements.txt`: Python dependencies
