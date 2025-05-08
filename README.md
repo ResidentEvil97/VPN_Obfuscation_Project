@@ -22,7 +22,7 @@ _Figure: Approach for the VPN Obfuscation RL Environment and DPI interaction._
   - `sac_maml_vpn.py`: MAML meta-learning script for adaptability
 - `dpi/`: DPI logic and simulated detection models
   - `mock_dpi.py`: Heuristic detection rules for DPI
-  - `packet_features.py`: Feature extraction from PCAP or CSV
+  - `train_dpi_ml.py`: Script to train a machine learning-based DPI classifier (Random Forest) on processed data
   - `data/`: Data for DPI (used by packet_features or ML-DPI)
     - `sample_combined_balanced.csv`: Example CSV dataset for DPI/ML classifier
   - `models/`: Machine learning classifiers for DPI logic (e.g., .pkl files)
